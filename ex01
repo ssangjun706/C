@@ -1,0 +1,5 @@
+void calculate_frequency(int arr[], int fre[]){
+	for (int i = 0; i < 25; i++) {
+		fre[arr[i]]++;
+	}
+}
