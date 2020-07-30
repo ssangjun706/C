@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <math.h>
+
+int b_charge_f(int);
+int u_charge_f(int);
+int fund_f(double);
+
+int main(void) {
+	int usage = 0;		//사용량
+	int b_charge = 0;	//기본요금
+	int u_charge = 0;	//사용량요금
+	int vat = 0;		//부가가치세
+	int fund = 0;		//전력산업기반기금
+	int charge = 0;		//총 부과금
+
+	do {				//사용량 입력
+		printf("사용량을 입력하세요: ");
+		scanf("%d", &usage);
+	} while (usage <= 0);
+
+	b_charge = b_charge_f(usage);
+	u_charge = u_charge_f(usage);
+	vat = round(((double)b_charge + u_charge)*0.1);
+	fund = fund_f((double)b_charge + u_charge);
+
+	charge = b_charge + u_charge + vat + fund;
+	charge = (charge / 10) * 10;
+	printf("%d ; %d ; %d ; %d\n", b_charge, u_charge, vat, fund);
+	printf("이번달 고객님의 전기요금은 %d원 입니다.\n", charge);
+
+	return 0;
+}
+
+int b_charge_f(int usage) {
+	if (usage > 400) {
+		return 7300;
+	}
+	else if (usage > 200) {
+		return 1600;
+	}
+	else {
+		return 910;
+	}
+}
+
+int u_charge_f(int usage) {
+	double t_u_charge = 0;
+
+	if (usage > 400) {
+		t_u_charge += (200 * 93.3);					// 0 ~ 200kWh
+		t_u_charge += (200 * 187.9);				// 201 ~ 400kWh
+		t_u_charge += ((usage - 400.0) * 280.6);	// 401kWh ~
+		
+	}
+	else if (usage > 200) {
+		t_u_charge = 200 * 93.3;	// 0 ~ 200kWh
+		t_u_charge += ((usage - 200.0) * 187.9);	// 200kWh ~
+
+	
+	} else {
+		t_u_charge = usage * 93.3;
+	}
+
+	return (int) t_u_charge;
+}
+
+int fund_f(double sum) {
+	sum *= 0.037;
+	sum = (int)sum/10;
+	sum *= 10;
+	return (int)sum;
+}
